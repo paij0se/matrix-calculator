@@ -160,6 +160,14 @@
 <button id="res">➖</button>
 <button id="mult">✖️</button>
 <div id="result"></div>
+<footer>
+  <div class="center">
+    <p>
+      Made with ❤️ by
+      <a href="https://github.com/paij0se" target="_blank">paij0se</a>
+    </p>
+  </div>
+</footer>
 
 <style>
   input {
@@ -179,4 +187,5 @@
     height: 50px;
     margin: 10px;
   }
+
 </style>
