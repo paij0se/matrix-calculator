@@ -55,6 +55,21 @@
     ];
   }
 
+  // Función para calcular la transpuesta de una matriz
+  function transposeMatrix(matrix: number[]): number[] {
+    return [
+      matrix[0],
+      matrix[3],
+      matrix[6],
+      matrix[1],
+      matrix[4],
+      matrix[7],
+      matrix[2],
+      matrix[5],
+      matrix[8],
+    ];
+  }
+
   // Función para mostrar el resultado
   function displayResult(result: number[]) {
     const resultDiv = document.getElementById("result");
@@ -62,7 +77,7 @@
       resultDiv.innerHTML = `
         <h2>Resultado:</h2>
         <p>[${result[0]}] [${result[1]}] [${result[2]}]</p>
-        <p>[${result[3]}] [${result[4]}] [${result[5]}]</p
+        <p>[${result[3]}] [${result[4]}] [${result[5]}]</p>
         <p>[${result[6]}] [${result[7]}] [${result[8]}]</p>
       `;
     }
@@ -106,6 +121,9 @@
       case "mult":
         result = multiplyMatrices(matrixA, matrixB);
         break;
+      case "trans":
+        result = transposeMatrix(matrixA); // Transponer la matriz A
+        break;
     }
 
     displayResult(result);
@@ -115,6 +133,7 @@
     const sumButton = document.getElementById("sum");
     const resButton = document.getElementById("res");
     const multButton = document.getElementById("mult");
+    const transButton = document.getElementById("trans");
 
     if (sumButton) {
       sumButton.addEventListener("click", () => handleOperation("sum"));
@@ -125,10 +144,13 @@
     if (multButton) {
       multButton.addEventListener("click", () => handleOperation("mult"));
     }
+    if (transButton) {
+      transButton.addEventListener("click", () => handleOperation("trans"));
+    }
   });
 </script>
 
-<div>
+<div class="center">
   <h1>Calculadora de Matrices</h1>
   <h1>A</h1>
   <input type="number" id="1" />
@@ -154,20 +176,22 @@
   <input type="number" id="16" />
   <input type="number" id="17" />
   <input type="number" id="18" />
+
+  <br />
+  <button id="sum">➕</button>
+  <button id="res">➖</button>
+  <button id="mult">✖️</button>
+  <button id="trans">🔄</button>
+  <div id="result"></div>
+  <footer>
+    <div class="center">
+      <p>
+        Made with ❤️ by
+        <a href="https://github.com/paij0se" target="_blank">paij0se</a>
+      </p>
+    </div>
+  </footer>
 </div>
-<br />
-<button id="sum">➕</button>
-<button id="res">➖</button>
-<button id="mult">✖️</button>
-<div id="result"></div>
-<footer>
-  <div class="center">
-    <p>
-      Made with ❤️ by
-      <a href="https://github.com/paij0se" target="_blank">paij0se</a>
-    </p>
-  </div>
-</footer>
 
 <style>
   input {
@@ -187,5 +211,4 @@
     height: 50px;
     margin: 10px;
   }
-
 </style>
