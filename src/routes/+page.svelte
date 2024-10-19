@@ -70,6 +70,114 @@
     ];
   }
 
+  // funcion para calcular la determinante de una matriz
+  /**
+   * Calcula la determinante de una matriz 3x3.
+   * @param matrix - Un arreglo de 9 elementos representando una matriz 3x3.
+   * @returns La determinante de la matriz.
+   */
+  function determinantMatrix(matrix: number[]): number {
+    // Verifica que la matriz tenga exactamente 9 elementos (una matriz 3x3)
+    if (matrix.length !== 9) {
+      throw new Error("La matriz debe ser de 3x3 (9 elementos).");
+    }
+
+    // Calcula la determinante usando la fórmula estándar para matrices 3x3
+    return (
+      matrix[0] * matrix[4] * matrix[8] + // aei
+      matrix[1] * matrix[5] * matrix[6] + // bfg
+      matrix[2] * matrix[3] * matrix[7] - // cdh
+      matrix[2] * matrix[4] * matrix[6] - // ceg
+      matrix[1] * matrix[3] * matrix[8] - // bdi
+      matrix[0] * matrix[5] * matrix[7] // afh
+    );
+  }
+  // Función para calcular la inversa de una matriz
+  function inverseMatrix(matrix: number[]): number[] {
+    // Calcula la determinante de la matriz
+    const det = determinantMatrix(matrix);
+
+    // Verifica que la matriz sea invertible (su determinante no es 0)
+    if (det === 0) {
+      alert("La matriz no es invertible.");
+      window.location.reload();
+    }
+
+    // Calcula la matriz adjunta
+    const adj = [
+      matrix[4] * matrix[8] - matrix[5] * matrix[7],
+      matrix[2] * matrix[7] - matrix[1] * matrix[8],
+      matrix[1] * matrix[5] - matrix[2] * matrix[4],
+      matrix[5] * matrix[6] - matrix[3] * matrix[8],
+      matrix[0] * matrix[8] - matrix[2] * matrix[6],
+      matrix[2] * matrix[3] - matrix[0] * matrix[5],
+      matrix[3] * matrix[7] - matrix[4] * matrix[6],
+      matrix[1] * matrix[6] - matrix[0] * matrix[7],
+      matrix[0] * matrix[4] - matrix[1] * matrix[3],
+    ];
+
+    // Calcula la matriz inversa dividiendo la adjunta por la determinante
+    return adj.map((value) => value / det);
+  }
+  function gauss(matrix: number[]) {
+    // Tomar los valores de la matriz extendida (3x4) con las incógnitas y resultados
+    const matrixD = getMatrixValues([
+      "1d",
+      "2d",
+      "3d",
+      "4d",
+      "5d",
+      "6d",
+      "7d",
+      "8d",
+      "9d",
+      "10d",
+      "11d",
+      "12d",
+    ]);
+
+    // Realizar eliminación gaussiana
+    for (let i = 0; i < 3; i++) {
+      const pivot = matrixD[4 * i + i]; // Pivote diagonal
+
+      // Verificar que el pivote no sea 0 para evitar división por cero
+      if (pivot === 0) {
+        alert(
+          `Error: pivote en la fila ${i + 1} es cero. La matriz no se puede resolver con este método.`
+        );
+        return;
+      }
+
+      // Hacer 1 el pivote dividiendo la fila completa por el pivote
+      for (let k = i; k < 4; k++) {
+        matrixD[4 * i + k] /= pivot;
+      }
+
+      // Hacer 0 los elementos debajo del pivote
+      for (let j = i + 1; j < 3; j++) {
+        const factor = matrixD[4 * j + i];
+        for (let k = i; k < 4; k++) {
+          matrixD[4 * j + k] -= factor * matrixD[4 * i + k];
+        }
+      }
+    }
+
+    // Realizar sustitución hacia atrás para obtener las soluciones
+    const result = [0, 0, 0];
+    for (let i = 2; i >= 0; i--) {
+      result[i] = matrixD[4 * i + 3]; // El valor constante en la ecuación
+      for (let j = i + 1; j < 3; j++) {
+        result[i] -= matrixD[4 * i + j] * result[j];
+      }
+      result[i] /= matrixD[4 * i + i];
+    }
+
+    // Mostrar el resultado en una alerta
+    alert(
+      `x = ${result[0].toFixed(2)}\ny = ${result[1].toFixed(2)}\nz = ${result[2].toFixed(2)}`
+    );
+  }
+
   // Función para mostrar el resultado
   function displayResult(result: number[]) {
     const resultDiv = document.getElementById("result");
@@ -124,8 +232,16 @@
       case "trans":
         result = transposeMatrix(matrixA); // Transponer la matriz A
         break;
+      case "deter":
+        result = [determinantMatrix(matrixA)]; // Calcular la determinante de la matriz A
+        break;
+      case "inverse":
+        result = inverseMatrix(matrixA); // Calcular la inversa de la matriz A
+        break;
+      case "gauss":
+        gauss(matrixA); // Calcular la eliminación gaussiana de la matriz A
+        break;
     }
-
     displayResult(result);
   }
 
@@ -134,6 +250,9 @@
     const resButton = document.getElementById("res");
     const multButton = document.getElementById("mult");
     const transButton = document.getElementById("trans");
+    const deterButton = document.getElementById("deter");
+    const inverseButton = document.getElementById("inverse");
+    const gaussButton = document.getElementById("gauss");
 
     if (sumButton) {
       sumButton.addEventListener("click", () => handleOperation("sum"));
@@ -146,6 +265,15 @@
     }
     if (transButton) {
       transButton.addEventListener("click", () => handleOperation("trans"));
+    }
+    if (deterButton) {
+      deterButton.addEventListener("click", () => handleOperation("deter"));
+    }
+    if (inverseButton) {
+      inverseButton.addEventListener("click", () => handleOperation("inverse"));
+    }
+    if (gaussButton) {
+      gaussButton.addEventListener("click", () => handleOperation("gauss"));
     }
   });
 </script>
@@ -181,8 +309,36 @@
   <button id="sum">➕</button>
   <button id="res">➖</button>
   <button id="mult">✖️</button>
+  <br />
   <button id="trans">🔄</button>
+  <button id="deter">Det</button>
+  <button id="inverse">Inv</button>
   <div id="result"></div>
+  <h1>Eliminacion Gaussiana</h1>
+  <h1>A</h1>
+  <input type="number" id="1d" placeholder="x" />
+  <input type="number" id="2d" placeholder="y" />
+  <input type="number" id="3d" placeholder="z" />
+  <span style="border-left: 1px solid black; height: 100px; margin: 10px;"
+  ></span>
+  <input type="number" id="4d" />
+  <br />
+  <input type="number" id="5d" placeholder="x" />
+  <input type="number" id="6d" placeholder="y" />
+  <input type="number" id="7d" placeholder="z" />
+  <span style="border-left: 1px solid black; height: 100px; margin: 10px;"
+  ></span>
+  <input type="number" id="8d" />
+  <br />
+  <!-- pon una linea vertical -->
+  <input type="number" id="9d" placeholder="x" />
+  <input type="number" id="10d" placeholder="y" />
+  <input type="number" id="11d" placeholder="z" />
+  <span style="border-left: 1px solid black; height: 100px; margin: 10px;"
+  ></span>
+  <input type="number" id="12d" />
+  <br />
+  <button id="gauss">Gauss</button>
   <footer>
     <div class="center">
       <p>
