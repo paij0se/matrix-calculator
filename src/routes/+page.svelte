@@ -119,7 +119,7 @@
     // Calcula la matriz inversa dividiendo la adjunta por la determinante
     return adj.map((value) => value / det);
   }
-  function gauss(matrix: number[]) {
+  function gauss(_: number[]) {
     // Tomar los valores de la matriz extendida (3x4) con las incógnitas y resultados
     const matrixD = getMatrixValues([
       "1d",
